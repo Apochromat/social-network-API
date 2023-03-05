@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Distributed;
+using social_network_API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +28,9 @@ builder.Services.AddCors(options => {
         });
 });
 
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+
 // Add services to the container. Add ability to right convert strings to enums
 builder.Services.AddControllers().AddJsonOptions(opts => {
     var enumConverter = new JsonStringEnumConverter();
@@ -37,6 +41,7 @@ builder.Services.AddControllers().AddJsonOptions(opts => {
 builder.Services.AddDbContext<ApplicationDbContext>();
 
 // Add Services
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // Add Identity
 builder.Services.AddIdentity<User, Role>(options => { options.SignIn.RequireConfirmedEmail = false; })
@@ -74,18 +79,18 @@ builder.Services.AddSwaggerGen(option => {
 });
 
 builder.Services.AddAuthorization();
-// builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//     .AddJwtBearer(options => {
-//         options.TokenValidationParameters = new TokenValidationParameters {
-//             ValidateIssuer = true,
-//             ValidIssuer = JwtConfiguration.Issuer,
-//             ValidateAudience = true,
-//             ValidAudience = JwtConfiguration.Audience,
-//             ValidateLifetime = true,
-//             IssuerSigningKey = JwtConfiguration.GetSymmetricSecurityKey(),
-//             ValidateIssuerSigningKey = true,
-//         };
-//     });
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuer = true,
+            ValidIssuer = JwtConfiguration.Issuer,
+            ValidateAudience = true,
+            ValidAudience = JwtConfiguration.Audience,
+            ValidateLifetime = true,
+            IssuerSigningKey = JwtConfiguration.GetSymmetricSecurityKey(),
+            ValidateIssuerSigningKey = true,
+        };
+    });
 
 var app = builder.Build();
 
