@@ -10,7 +10,9 @@ using social_network_API.Models.DTO;
 using social_network_API.Models.Enum;
 
 namespace social_network_API.Services;
-
+/// <summary>
+/// Users account management service
+/// </summary>
 public class AccountService : IAccountService {
     private readonly UserManager<User> _userManager;
     private readonly SignInManager<User> _signInManager;
@@ -20,6 +22,9 @@ public class AccountService : IAccountService {
     private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Users account management service
+    /// </summary>
     public AccountService(ILogger<AccountService> logger, ApplicationDbContext context,
         UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<Role> roleManager,
         IConfiguration configuration, IMapper mapper) {
@@ -66,26 +71,20 @@ public class AccountService : IAccountService {
     /// <summary>
     /// Deletes an user if it exists
     /// </summary>
-    public async Task<Response> DeleteUser(string email) {
+    public async Task<String> DeleteUser(string email) {
         var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
-            return new Response() {
-                Status = "Ok",
-                Message = "There is no user with this email"
-            };
+        if (user == null) return "There is no user with this email";
 
         await _userManager.DeleteAsync(user);
 
-        return new Response() {
-            Status = "Ok",
-            Message = "User was deleted successfully"
-        };
+        return "User was deleted successfully";
     }
 
     /// <summary>
     /// Log user in
     /// </summary>
     public async Task<TokenResponse> Login(LoginCredentials loginCredentials) {
+        if (loginCredentials.Password == null || loginCredentials.Email == null) throw new ArgumentNullException();
         var identity = await GetIdentity(loginCredentials.Email.ToLower(), loginCredentials.Password);
         if (identity == null) {
             throw new ArgumentException("Incorrect username or password");
@@ -117,7 +116,7 @@ public class AccountService : IAccountService {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null) throw new KeyNotFoundException("User not found");
 
-        user = _userManager.Users.Where(u => u.Email == email).Include(u => u.Roles)
+        user = _userManager.Users.Where(u => u.Email == email).Include(u => u.Roles)!
             .ThenInclude(r => r.Role)
             .First();
 
@@ -128,27 +127,24 @@ public class AccountService : IAccountService {
     /// <summary>
     /// Edit user`s profile
     /// </summary>
-    public async Task<Response> EditProfile(string email, UserProfileEdit userProfileEdit) {
+    public async Task<String> EditProfile(string email, UserProfileEdit userProfileEdit) {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null) throw new KeyNotFoundException("User not found");
-
-        user.FullName = Regex.Replace(userProfileEdit.FullName, @"\s+", " ");
-        user.Gender = userProfileEdit.Gender;
+        
+        user.FullName = userProfileEdit.FullName == null ? user.FullName : Regex.Replace(userProfileEdit.FullName, @"\s+", " ");
         user.Birthdate = userProfileEdit.Birthdate;
-        user.Status = userProfileEdit.Status;
-        user.Bio = userProfileEdit.Bio;
-        user.ProfileImage = userProfileEdit.ProfileImage;
-        user.BackgroundImage = userProfileEdit.BackgroundImage;
-        user.Discord = userProfileEdit.Discord;
-        user.Telegram = userProfileEdit.Telegram;
+        user.Status = userProfileEdit.Status ?? user.Status;
+        user.Bio = userProfileEdit.Bio ?? user.Bio;
+        user.ProfileImage = userProfileEdit.ProfileImage ?? user.ProfileImage;
+        user.BackgroundImage = userProfileEdit.BackgroundImage ?? user.BackgroundImage;
+        user.Discord = userProfileEdit.Discord ?? user.Discord;
+        user.Telegram = userProfileEdit.Telegram ?? user.Telegram;
+        
         await _context.SaveChangesAsync();
 
         _logger.LogInformation("User`s profile was modified successfully");
 
-        return new Response {
-            Status = "Ok",
-            Message = "Successfully modified"
-        };
+        return "User`s profile was modified successfully";
     }
 
     private async Task<ClaimsIdentity?> GetIdentity(string email, string password) {

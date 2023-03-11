@@ -104,9 +104,9 @@ public class AccountController : ControllerBase {
     [HttpPut]
     [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("profile")]
-    public async Task<ActionResult<Response>> EditAccountProfile([FromBody] UserProfileEdit userProfileEdit) {
+    public async Task<ActionResult> EditAccountProfile([FromBody] UserProfileEdit userProfileEdit) {
         try {
-            return await _account.EditProfile(User.Identity.Name, userProfileEdit);
+            return Ok(await _account.EditProfile(User.Identity.Name, userProfileEdit));
         }
         catch (KeyNotFoundException e) {
             _logger.LogError(e,

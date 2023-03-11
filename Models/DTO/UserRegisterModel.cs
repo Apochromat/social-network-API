@@ -31,20 +31,6 @@ public class UserRegisterModel {
     [Phone]
     [DisplayName("phone")]
     public String? PhoneNumber { get; set; }
-    
-    /// <summary>
-    /// Users Gender
-    /// </summary>
-    [Required]
-    [DisplayName("gender")]
-    public Gender? Gender { get; set; }
-    
-    /// <summary>
-    /// Users Birthdate
-    /// </summary>
-    [Required]
-    [DisplayName("birthdate")]
-    public DateTime? Birthdate { get; set; }
 
     /// <summary>
     /// Users Password. Must Contain at least one non alphanumeric character, at least one digit ('0'-'9'),

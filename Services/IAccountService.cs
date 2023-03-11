@@ -4,8 +4,8 @@ namespace social_network_API.Services;
 
 public interface IAccountService {
     Task<TokenResponse> Register(UserRegisterModel userRegisterModel);
-    Task<Response> DeleteUser(string email);
+    Task<String> DeleteUser(string email);
     Task<TokenResponse> Login(LoginCredentials loginCredentials);
     Task<UserProfile> GetProfile(string email);
-    Task<Response> EditProfile(string email, UserProfileEdit userProfileEdit);
+    Task<String> EditProfile(string email, UserProfileEdit userProfileEdit);
 }
