@@ -54,4 +54,8 @@ public class User : IdentityUser<Guid> {
     /// List of users roles
     /// </summary>
     public ICollection<UserRole>? Roles { get; set; }
+    /// <summary>
+    /// List of users chats
+    /// </summary>
+    public ICollection<Chat>? Chats { get; set; }
 }
