@@ -24,7 +24,8 @@ builder.Services.AddCors(options => {
         policy => {
             policy.AllowAnyOrigin()
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowCredentials();
         });
 });
 
@@ -55,6 +56,7 @@ builder.Services.AddIdentity<User, Role>(options => { options.SignIn.RequireConf
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option => {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Social Network API", Version = "v1" });
+    option.AddSignalRSwaggerGen();
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
         In = ParameterLocation.Header,
         Description = "Please enter a valid token",
