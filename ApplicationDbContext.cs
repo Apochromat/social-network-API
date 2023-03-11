@@ -5,10 +5,12 @@ using social_network_API.Models;
 
 namespace social_network_API;
 
+/// <inheritdoc />
 public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole,
     IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>> {
     private readonly IConfiguration _configuration;
 
+    /// <inheritdoc />
     public ApplicationDbContext(IConfiguration configuration) : base() {
         _configuration = configuration;
     }
@@ -18,7 +20,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, Identity
     public DbSet<UserRole> UserRoles { get; set; }
     public DbSet<Location> Locations { get; set; }
     public DbSet<Job> Jobs { get; set; }
-
+    
+    /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<User>(e => { e.ToTable("Users"); });
@@ -34,10 +37,9 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, Identity
                 .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
-        /*modelBuilder.Entity<Classroom>().HasKey(x => x.Id);
-        modelBuilder.Entity<Group>().HasKey(x => x.Id);*/
     }
 
+    /// <inheritdoc />
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         optionsBuilder.UseMySql(_configuration.GetConnectionString("MySQLDatabase"),
             new MySqlServerVersion(new Version(8, 0, 31)));

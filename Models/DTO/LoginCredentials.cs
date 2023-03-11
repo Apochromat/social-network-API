@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace social_network_API.Models.DTO; 
 
+/// <summary>
+/// Login Credentials DTO
+/// </summary>
 public class LoginCredentials {
     /// <summary>
     /// Users Email
