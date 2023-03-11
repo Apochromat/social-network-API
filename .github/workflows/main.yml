@@ -12,9 +12,18 @@ jobs:
     steps:
     - name: Checkout source code
       uses: actions/checkout@v2
+      
+    - name: Stop service
+      run: sudo systemctl stop kestrel-social-backend.service
+      
+    - name: Set owner
+      run: chown -R www-data:www-data /var/www/social 
     
     - name: Build project
       run: dotnet publish -c Debug -o /var/www/social
+      
+    - name: Set owner
+      run: chown -R www-data:www-data /var/www/social 
       
     - name: Restart service
       run: sudo systemctl restart kestrel-social.service
