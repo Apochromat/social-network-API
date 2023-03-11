@@ -22,7 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options => {
     options.AddDefaultPolicy(
         policy => {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:5173", "http://social.markridge.space/")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials();
